@@ -2,41 +2,32 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
+  <title>OSM + Kerékpár réteg</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OSM PWA példa</title>
-
-  <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#317EFB" />
-
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
 </head>
 <body>
-  <h1>OpenStreetMap PWA</h1>
   <div id="map"></div>
 
-  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- Saját térkép inicializáló JS -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
+    const map = L.map('map').setView([47.5, 19.05], 12); // pl. Budapest
 
-    const map = L.map('map').setView([46.9, 17.9], 10); // Pl. Balaton
-
-//    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//      attribution: '© OpenStreetMap hozzájárulók'
-//    }).addTo(map);
-// No political agitatioon!
-     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> & <a href="https://carto.com/">CartoDB</a>',
-      subdomains: 'abcd',
+    // Alap OpenStreetMap csempe
+    const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
       maxZoom: 19
-    }).addTo(map);  </script>
+    }).addTo(map);
+
+    // 🚴 Kerékpárutak overlay (Waymarked Trails - Cycling)
+    const bikeLayer = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.waymarkedtrails.org">Waymarked Trails</a> & OSM',
+      maxZoom: 18,
+      opacity: 0.7 // lehet módosítani
+    }).addTo(map);
+  </script>
 </body>
 </html>
