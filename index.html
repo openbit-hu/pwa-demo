@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <title>OSM + Kerékpár réteg</title>
+  <title>Rétegváltós térkép – Leaflet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
@@ -14,20 +14,48 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map').setView([47.5, 19.05], 12); // pl. Budapest
+    const map = L.map('map').setView([47.4979, 19.0402], 12); // Budapest
 
-    // Alap OpenStreetMap csempe
-    const osmBase = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+    // 📌 Alaptérképek
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
+
+    const carto = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap & CartoDB',
+      subdomains: 'abcd',
       maxZoom: 19
-    }).addTo(map);
+    });
 
-    // 🚴 Kerékpárutak overlay (Waymarked Trails - Cycling)
-    const bikeLayer = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.waymarkedtrails.org">Waymarked Trails</a> & OSM',
-      maxZoom: 18,
-      opacity: 0.7 // lehet módosítani
-    }).addTo(map);
+    // 🚴 Kerékpáros overlay
+    const cycling = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+      attribution: '© Waymarked Trails – Kerékpár',
+      opacity: 0.7
+    });
+
+    // 🥾 Gyalogos overlay
+    const hiking = L.tileLayer('https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
+      attribution: '© Waymarked Trails – Gyalogos',
+      opacity: 0.7
+    });
+
+    // 🔀 Rétegek objektum
+    const baseMaps = {
+      "OpenStreetMap": osm,
+      "CartoDB Light": carto
+    };
+
+    const overlayMaps = {
+      "🚴 Kerékpárutak": cycling,
+      "🥾 Gyalogtúra utak": hiking
+    };
+
+    // 🌍 Hozzáadás térképhez
+    osm.addTo(map);       // Kezdő alaptérkép
+    cycling.addTo(map);   // Kezdő overlay
+
+    // 🧭 Rétegváltó gomb
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
   </script>
 </body>
 </html>
